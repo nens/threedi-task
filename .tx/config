@@ -1,8 +1,0 @@
-[main]
-host = https://translations.lizard.net
-type = PO
-
-[nens.threedi-task]
-file_filter = threedi_task/locale/<lang>/LC_MESSAGES/django.po
-source_file = threedi_task/locale/en/LC_MESSAGES/django.po
-source_lang = en

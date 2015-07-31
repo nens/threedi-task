@@ -9,14 +9,12 @@ from django.conf.urls import url
 from django.contrib import admin
 from lizard_ui.urls import debugmode_urlpatterns
 
-from threedi_task import views
+# from threedi_task import views
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^ui/', include('lizard_ui.urls')),
-    # url(r'^map/', include('lizard_map.urls')),
     url(r'^admin/', include(admin.site.urls)),
     # url(r'^something/',
     #     views.some_method,

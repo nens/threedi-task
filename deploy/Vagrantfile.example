@@ -27,14 +27,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # TODO: IP must match the IP in your dev inventory file
   config.vm.provider :lxc do |lxc|
     lxc.customize 'cgroup.memory.limit_in_bytes', '2048M'
-    lxc.customize 'network.ipv4', '10.0.3.102/32'
+    lxc.customize 'network.ipv4', '10.0.3.103/32'
   end
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8001" will access port 8000 on the guest machine.
+  # accessing "localhost:7001" will access port 7000 on the guest machine.
   # Django application
-  config.vm.network :forwarded_port, guest: 8000, host: 8001
+  config.vm.network :forwarded_port, guest: 7000, host: 7001
 
   # Need to do an apt-get update first, otherwise ansible fails to run
   config.vm.provision :shell, inline: 'sudo apt-get update && apt-get install python-apt -y'

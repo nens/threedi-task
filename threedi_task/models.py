@@ -3,7 +3,31 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-# from django.db import models
+from django.db import models
+from django.contrib.auth.models import User
 # from django.utils.translation import ugettext_lazy as _
 
-# Create your models here.
+
+class Task(models.Model):
+    """A representation of a Celery task"""
+    uuid = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128)
+    state = models.CharField(max_length=20)
+    args = models.TextField(blank=True)
+    kwargs = models.TextField(blank=True)
+    result = models.TextField(blank=True)
+
+    # the time the task was called or requested, which is a local time; this
+    # differs from the 'received' and 'started' time in Celery flower which
+    # refers to the the time in which Celery picks up or executes the task
+    start_time = models.DateTimeField(auto_now_add=True)
+
+    end_time = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(User, blank=True, null=True)
+
+    class Meta:
+        get_latest_by = "start_time"
+        ordering = ("-start_time",)
+
+    def __unicode__(self):
+        return "{} ({})".format(self.name, self.uuid)

@@ -8,4 +8,7 @@ from django.contrib import admin
 from threedi_task import models
 
 
-# admin.site.register(models.TODO)
+#class TaskManager(admin.ModelAdmin):
+#    pass
+
+admin.site.register(models.Task)

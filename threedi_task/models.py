@@ -5,6 +5,7 @@ from __future__ import print_function
 
 from django.db import models
 from django.contrib.auth.models import User
+from celery.result import AsyncResult
 # from django.utils.translation import ugettext_lazy as _
 
 
@@ -31,3 +32,16 @@ class Task(models.Model):
 
     def __unicode__(self):
         return "{} ({})".format(self.name, self.uuid)
+
+    def update_state(self):
+        async_result = AsyncResult(self.uuid)
+
+        assert async_result.id == self.uuid
+
+        old_state = self.state
+        new_state = async_result.state
+        ready = async_result.ready()  # TODO: useful as extra check?
+        self.state = str(new_state)
+        self.save()
+
+        return old_state, new_state, ready

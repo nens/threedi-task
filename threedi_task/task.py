@@ -24,7 +24,7 @@ def update_task_states(
         success_states: states which count as success
         failure_states: states which count as failed (will be excluded)
     Returns:
-        a list of task ids of the succeeded tasks
+        a list of succeeded tasks
     """
     excluded_states = success_states + failure_states
 
@@ -39,6 +39,6 @@ def update_task_states(
         old_state, new_state, ready = task.update_state()
 
         if new_state in success_states:
-            succeeded.append(task.uuid)
+            succeeded.append(task)
 
     return succeeded

@@ -8,7 +8,7 @@ from django.contrib import admin
 from threedi_task import models
 
 
-#class TaskManager(admin.ModelAdmin):
-#    pass
+class TaskAdmin(admin.ModelAdmin):
+    readonly_fields = ('start_date',)  # or else it doesn't appear in admin
 
-admin.site.register(models.Task)
+admin.site.register(models.Task, TaskAdmin)

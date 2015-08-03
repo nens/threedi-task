@@ -122,6 +122,10 @@ STATICFILES_DIRS = [
 BROKER_URL = 'TODO AND REQUIRED'
 CELERY_RESULT_BACKEND = 'TODO'
 
+# Task state settings
+SUCCESS_STATES = ['SUCCESS']
+FAILURE_STATES = ['FAILURE']
+
 
 try:
     # Import local settings that aren't stored in svn/git.

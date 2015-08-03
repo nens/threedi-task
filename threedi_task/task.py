@@ -5,18 +5,17 @@ from __future__ import division
 
 import logging
 
+from django.conf import settings
+
 from threedi_task.models import Task
 
 
 logger = logging.getLogger(__name__)
 
-SUCCESS_STATES = ['SUCCESS']
-FAILURE_STATES = ['FAILURE']
-
 
 def update_task_states(
-        task_name=None, success_states=SUCCESS_STATES,
-        failure_states=FAILURE_STATES, *args, **kwargs):
+        task_name=None, success_states=settings.SUCCESS_STATES,
+        failure_states=settings.FAILURE_STATES, *args, **kwargs):
     """Check the state of the tasks and update it
 
     Params:

@@ -13,7 +13,7 @@ from threedi_task.models import Task
 logger = logging.getLogger(__name__)
 
 
-def update_task_states(
+def update_and_get_succeeded(
         task_name=None, success_states=settings.SUCCESS_STATES,
         failure_states=settings.FAILURE_STATES, *args, **kwargs):
     """Check the state of the tasks and update it

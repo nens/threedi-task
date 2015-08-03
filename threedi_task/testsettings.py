@@ -118,6 +118,10 @@ STATICFILES_DIRS = [
     # ^^^ bower-managed files.
 ]
 
+# Celery
+BROKER_URL = 'TODO AND REQUIRED'
+CELERY_RESULT_BACKEND = 'TODO'
+
 
 try:
     # Import local settings that aren't stored in svn/git.

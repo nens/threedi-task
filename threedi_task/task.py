@@ -17,7 +17,15 @@ FAILURE_STATES = ['FAILURE']
 def update_task_states(
         task_name=None, success_states=SUCCESS_STATES,
         failure_states=FAILURE_STATES, *args, **kwargs):
-    """Check the state of the tasks and update it"""
+    """Check the state of the tasks and update it
+
+    Params:
+        task_name: a specific task name to update, if None: update all tasks
+        success_states: states which count as success
+        failure_states: states which count as failed (will be excluded)
+    Returns:
+        a list of task ids of the succeeded tasks
+    """
     excluded_states = success_states + failure_states
 
     # First get all the outstanding tasks from the db

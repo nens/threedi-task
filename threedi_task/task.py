@@ -5,17 +5,19 @@ from __future__ import division
 
 import logging
 
-from django.conf import settings
-
 from threedi_task.models import Task
 
 
 logger = logging.getLogger(__name__)
 
+# see Celery source
+SUCCESS_STATES = ['SUCCESS']
+FAILURE_STATES = ['FAILURE', 'REVOKED']
+
 
 def update_and_get_succeeded(
-        task_name=None, success_states=settings.SUCCESS_STATES,
-        failure_states=settings.FAILURE_STATES, *args, **kwargs):
+        task_name=None, success_states=SUCCESS_STATES,
+        failure_states=FAILURE_STATES, *args, **kwargs):
     """Check the state of the tasks and update it
 
     Params:

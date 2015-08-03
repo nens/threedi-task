@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from celery.result import AsyncResult
@@ -34,13 +36,19 @@ class Task(models.Model):
         return "{} ({})".format(self.name, self.uuid)
 
     def update_state(self):
+        """Update state and end_time if ready"""
         async_result = AsyncResult(self.uuid)
 
         assert async_result.id == self.uuid
 
         old_state = self.state
         new_state = async_result.state
-        ready = async_result.ready()  # TODO: useful as extra check?
+
+        # ready means SUCCESS, FAILURE or REVOKED (see Celery source code)
+        ready = async_result.ready()
+        if ready:
+            self.end_time = datetime.now()
+
         self.state = str(new_state)
         self.save()
 

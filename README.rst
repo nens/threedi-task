@@ -2,8 +2,14 @@ threedi-task
 ==========================================
 
 Introduction
+------------
 
-Usage, etc.
+A simple app to keep track of your Celery tasks. To use threedi-task in your
+site, include the following settings::
+
+    # Celery (fill in your custom settings)
+    BROKER_URL = 'TODO AND REQUIRED'
+    CELERY_RESULT_BACKEND = 'TODO'
 
 
 Post-nensskel setup TODO

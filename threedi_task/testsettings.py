@@ -72,7 +72,8 @@ DATABASES = {
     # that as an error.
     'default': {
         'NAME': os.path.join(BUILDOUT_DIR, 'var', 'sqlite', 'test.db'),
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        #'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'ENGINE': 'django.db.backends.sqlite3',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',  # empty string for localhost.
@@ -83,10 +84,8 @@ SITE_ID = 1
 SECRET_KEY = 'This is not secret but that is ok.'
 INSTALLED_APPS = [
     'threedi_task',
-    'lizard_ui',
     'south',
     'django_nose',
-    'lizard_security',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',

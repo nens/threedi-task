@@ -12,6 +12,8 @@ install_requires = [
     'Django',
     'django-extensions',
     'django-nose',
+    'South',
+    'django-celery',
     ],
 
 tests_require = [

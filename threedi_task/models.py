@@ -47,7 +47,7 @@ class Task(models.Model):
         # ready means SUCCESS, FAILURE or REVOKED (see Celery source code)
         ready = async_result.ready()
         if ready:
-            self.end_time = datetime.now()
+            self.end_time = datetime.datetime.now()
 
         self.state = str(new_state)
         self.save()

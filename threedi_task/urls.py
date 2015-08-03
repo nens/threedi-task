@@ -7,7 +7,6 @@ from django.conf.urls import include
 from django.conf.urls import patterns
 from django.conf.urls import url
 from django.contrib import admin
-from lizard_ui.urls import debugmode_urlpatterns
 
 # from threedi_task import views
 
@@ -23,4 +22,3 @@ urlpatterns = patterns(
     #     views.SomeClassBasedView.as_view(),
     #     name='name_it_too'),
     )
-urlpatterns += debugmode_urlpatterns()

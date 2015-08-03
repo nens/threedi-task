@@ -91,7 +91,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.gis',
+#    'django.contrib.gis',
     'django.contrib.sites',
     'django.contrib.staticfiles',
     ]
@@ -104,8 +104,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'lizard_security.middleware.SecurityMiddleware',
-    'tls.TLSRequestMiddleware',
     )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

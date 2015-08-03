@@ -9,6 +9,6 @@ from threedi_task import models
 
 
 class TaskAdmin(admin.ModelAdmin):
-    readonly_fields = ('start_date',)  # or else it doesn't appear in admin
+    readonly_fields = ('start_time',)  # or else it doesn't appear in admin
 
 admin.site.register(models.Task, TaskAdmin)

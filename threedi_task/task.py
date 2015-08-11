@@ -34,6 +34,9 @@ def update_and_get_succeeded(
     Returns:
         a list of succeeded tasks
     """
+    if method == 'djcelery_api' and not djcelery_api_url:
+        raise Exception("No Djcelery API url given for method="
+                        "djcelery_api")
 
     # First get all the outstanding tasks from the db
     tasks = Task.objects.filter(name=task_name) if task_name else \
@@ -44,14 +47,10 @@ def update_and_get_succeeded(
     succeeded = []
     for task in outstanding_tasks:
         if method == 'async_result':
-            updated_state = task.update_state_asyncresult()
+            updated_state = task.update_state_async_result()
         elif method == 'djcelery_api':
-            if djcelery_api_url:
-                updated_state = \
-                    task.update_state_djcelery_api(djcelery_api_url)
-            else:
-                raise Exception("No Djcelery API url given for method="
-                                "djcelery_api")
+            updated_state = \
+                task.update_state_djcelery_api(djcelery_api_url)
 
         if updated_state.new_state in success_states:
             succeeded.append(task)

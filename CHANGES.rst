@@ -5,7 +5,7 @@ Changelog of threedi-task
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add better error handling.
 
 
 0.2 (2015-08-11)

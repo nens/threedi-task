@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import logging
 import datetime
 from collections import namedtuple
 
@@ -12,6 +13,8 @@ from celery.result import AsyncResult
 # from django.utils.translation import ugettext_lazy as _
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 # see Celery source
 SUCCESS_STATES = ['SUCCESS']
@@ -72,8 +75,13 @@ class Task(models.Model):
         url = "{base_url}/{task_id}/status".format(base_url=base_url,
                                                    task_id=self.uuid)
         r = requests.get(url)
-        resp = r.json()
-        new_state = resp['task']['status']
+        if r.status_code == requests.codes.ok:
+            resp = r.json()
+            new_state = resp['task']['status']
+        else:
+            logger.error("Request failed with reason: %s", r.reason)
+            raise Exception("Request to %s failed with reason: %s" %
+                            (url, r.reason))
 
         ready = new_state in READY_STATES
         if ready:

@@ -2,10 +2,16 @@ Changelog of threedi-task
 ===================================================
 
 
-0.2 (unreleased)
+0.3 (unreleased)
 ----------------
 
 - Nothing changed yet.
+
+
+0.2 (2015-08-11)
+----------------
+
+- Update for task server api V2.
 
 
 0.1 (2015-08-10)

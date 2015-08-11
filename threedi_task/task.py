@@ -49,8 +49,13 @@ def update_and_get_succeeded(
         if method == 'async_result':
             updated_state = task.update_state_async_result()
         elif method == 'djcelery_api':
-            updated_state = \
-                task.update_state_djcelery_api(djcelery_api_url)
+            try:
+                updated_state = task.update_state_djcelery_api(
+                    djcelery_api_url)
+            except Exception, e:
+                print(e)
+                logger.error(e)
+                continue
 
         if updated_state.new_state in success_states:
             succeeded.append(task)

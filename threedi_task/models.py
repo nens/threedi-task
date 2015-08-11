@@ -76,17 +76,28 @@ class Task(models.Model):
                                                    task_id=self.uuid)
         r = requests.get(url)
         if r.status_code == requests.codes.ok:
-            resp = r.json()
-            new_state = resp['task']['status']
+            try:
+                resp = r.json()
+                new_state = resp['task']['status']
+            except ValueError:
+                logger.exception("Cannot decode JSON, url: %s", url)
+                raise
+            except KeyError:
+                logger.exception("No status in response JSON: %s", resp)
+                raise
         else:
-            logger.error("Request failed with reason: %s", r.reason)
+            logger.error("Request failed; reason: %s", r.reason)
             raise Exception("Request to %s failed with reason: %s" %
                             (url, r.reason))
 
         ready = new_state in READY_STATES
         if ready:
             self.end_time = datetime.datetime.now()
-            self.result = resp['task']['result']
+            try:
+                self.result = resp['task']['result']
+            except KeyError:
+                logger.exception("No result in response JSON: %s", resp)
+                print("No result found in JSON: %s" % resp)
 
         self.state = str(new_state)
         self.save()

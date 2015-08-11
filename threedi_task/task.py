@@ -13,33 +13,47 @@ logger = logging.getLogger(__name__)
 # see Celery source
 SUCCESS_STATES = ['SUCCESS']
 FAILURE_STATES = ['FAILURE', 'REVOKED']
+READY_STATES = SUCCESS_STATES + FAILURE_STATES
 
 
 def update_and_get_succeeded(
         task_name=None, success_states=SUCCESS_STATES,
-        failure_states=FAILURE_STATES, *args, **kwargs):
-    """Check the state of the tasks and update it
+        failure_states=FAILURE_STATES, method='async_result',
+        djcelery_api_url='', *args, **kwargs):
+    """
+    Check the state of the tasks and update it via Celery.
 
     Params:
         task_name: a specific task name to update, if None: update all tasks
         success_states: states which count as success
         failure_states: states which count as failed (will be excluded)
+        method:
+            - async_result: use Celery AsyncResult to update the state
+            - djcelery_api: use a call to the djcelery api to update the state
+        djcelery_api_url: the api base url for method='djcelery_api'
     Returns:
         a list of succeeded tasks
     """
-    excluded_states = success_states + failure_states
 
     # First get all the outstanding tasks from the db
     tasks = Task.objects.filter(name=task_name) if task_name else \
         Task.objects.all()
-    outstanding_tasks = tasks.exclude(state__in=excluded_states)
+    outstanding_tasks = tasks.exclude(state__in=READY_STATES)
 
     # Check if the outstanding tasks have succeeded
     succeeded = []
     for task in outstanding_tasks:
-        old_state, new_state, ready = task.update_state()
+        if method == 'async_result':
+            updated_state = task.update_state_asyncresult()
+        elif method == 'djcelery_api':
+            if djcelery_api_url:
+                updated_state = \
+                    task.update_state_djcelery_api(djcelery_api_url)
+            else:
+                raise Exception("No Djcelery API url given for method="
+                                "djcelery_api")
 
-        if new_state in success_states:
+        if updated_state.new_state in success_states:
             succeeded.append(task)
 
     return succeeded

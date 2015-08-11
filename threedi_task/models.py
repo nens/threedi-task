@@ -4,11 +4,19 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import datetime
+from collections import namedtuple
 
 from django.db import models
 from django.contrib.auth.models import User
 from celery.result import AsyncResult
 # from django.utils.translation import ugettext_lazy as _
+
+import requests
+
+# see Celery source
+SUCCESS_STATES = ['SUCCESS']
+FAILURE_STATES = ['FAILURE', 'REVOKED']
+READY_STATES = SUCCESS_STATES + FAILURE_STATES
 
 
 class Task(models.Model):
@@ -35,21 +43,45 @@ class Task(models.Model):
     def __unicode__(self):
         return "{} ({})".format(self.name, self.uuid)
 
-    def update_state(self):
-        """Update state and end_time if ready"""
+    def update_state_async_result(self):
+        """Update state and end_time if ready via Celery AsyncResult."""
+        previous_state = self.state
+
         async_result = AsyncResult(self.uuid)
-
         assert async_result.id == self.uuid
-
-        old_state = self.state
         new_state = async_result.state
 
         # ready means SUCCESS, FAILURE or REVOKED (see Celery source code)
         ready = async_result.ready()
         if ready:
             self.end_time = datetime.datetime.now()
+            self.result = async_result.result
 
         self.state = str(new_state)
         self.save()
 
-        return old_state, new_state, ready
+        State = namedtuple('State', ['previous_state', 'new_state', 'ready'])
+        return State(previous_state, new_state, ready)
+
+    def update_state_djcelery_api(self, base_url):
+        """
+        Update state using a call to the status URL implemented via the
+        djcelery views
+        """
+        previous_state = self.state
+        url = "{base_url}/{task_id}/status".format(base_url=base_url,
+                                                   task_id=self.uuid)
+        r = requests.get(url)
+        resp = r.json()
+        new_state = resp['task']['status']
+
+        ready = new_state in READY_STATES
+        if ready:
+            self.end_time = datetime.datetime.now()
+            self.result = resp['task']['result']
+
+        self.state = str(new_state)
+        self.save()
+
+        State = namedtuple('State', ['previous_state', 'new_state', 'ready'])
+        return State(previous_state, new_state, ready)

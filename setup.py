@@ -14,6 +14,7 @@ install_requires = [
     'django-nose',
     'South',
     'django-celery',
+    'requests',
     ],
 
 tests_require = [

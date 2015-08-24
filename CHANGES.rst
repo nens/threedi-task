@@ -5,6 +5,8 @@ Changelog of threedi-task
 0.3 (unreleased)
 ----------------
 
+- Catch ConnectionError.
+
 - Add better error handling.
 
 

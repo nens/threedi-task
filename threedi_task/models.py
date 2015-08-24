@@ -74,7 +74,12 @@ class Task(models.Model):
         previous_state = self.state
         url = "{base_url}/{task_id}/status".format(base_url=base_url,
                                                    task_id=self.uuid)
-        r = requests.get(url)
+        try:
+            r = requests.get(url)
+        except requests.exceptions.ConnectionError:
+            logger.exception("Cannot connect to: %s", url)
+            raise
+
         if r.status_code == requests.codes.ok:
             try:
                 resp = r.json()
